@@ -1,77 +1,113 @@
-# AI-Powered Support Assistant (React + Node + SQLite + LLM)
+# AI-Powered Support Assistant
 
-A full-stack AI support assistant that answers user questions strictly from provided product documentation (`docs.json`), maintains session-wise context, and stores all conversations in SQLite.
+A full-stack AI Support Assistant built with:
 
-If the answer is not present in the docs, it responds:
-> "Sorry, I don’t have information about that."
+- **Frontend:** React (Vite)
+- **Backend:** Node.js (Express)
+- **Database:** SQLite
+- **LLM:** OpenAI
+- **Strict Document-Based Answering**
+
+The assistant answers user questions **only using content from `docs.json`**.
+
+If information is not found in the documentation, it responds:
+
+> **"Sorry, I don’t have information about that."**
 
 ---
 
-## Tech Stack
-
-- Frontend: React (Vite)
-- Backend: Node.js (Express)
-- Database: SQLite (better-sqlite3)
-- LLM: OpenAI (configurable)
-
----
-
-## Project Structure
+# Project Structure
 
 
 ai-support-assistant/
-docs.json
-.env.example
-backend/
-frontend/
+│
+├── docs.json
+├── .env.example
+├── README.md
+├── screenshots/
+│ ├── chat.png
+│ ├── fallback.png
+│ └── old-sessions.png
+│
+├── backend/
+└── frontend/
 
 
 ---
 
-## setup
+# Setup Instructions
 
-1) Configure docs
-Edit `docs.json` (project root). Example entry:
+## Configure Documentation
 
-json
-{
-  "title": "Reset Password",
-  "content": "Users can reset their password by going to Settings > Security > Reset Password."
-}
+Edit the file:
 
-2) Backend setup
+
+docs.json
+
+
+Example:
+
+```json
+[
+  {
+    "title": "Reset Password",
+    "content": "Users can reset their password by going to Settings > Security > Reset Password."
+  }
+]
+
+
+
+
+
+Backend Setup
+
+Navigate to backend:
+
 cd backend
 npm install
 
-Create backend/.env:
+Create a .env file inside backend/:
 
 PORT=8080
 CORS_ORIGIN=http://localhost:5173
+
 OPENAI_API_KEY=YOUR_OPENAI_KEY
 OPENAI_MODEL=gpt-4.1-mini
 
-Run backend:
+Start backend:
 
 npm run dev
 
 Health check:
 
-GET http://localhost:8080/health → { "ok": true }
+GET http://localhost:8080/health
 
-3) Frontend setup
-cd ../frontend
+Response:
+
+{ "ok": true }
+
+
+
+
+
+Frontend Setup
+
+Open a second terminal:
+
+cd frontend
 npm install
 npm run dev
 
-Open:
+Open browser:
 
 http://localhost:5173
 
 
 
 
-## API Documentation
-1) POST /api/chat
+
+API Documentation
+POST /api/chat
 
 Request:
 
@@ -87,30 +123,34 @@ Response:
   "tokensUsed": 123
 }
 
-If not found in docs:
+If question is not in documentation:
 
 {
   "reply": "Sorry, I don’t have information about that.",
   "tokensUsed": 0
 }
-2) GET /api/conversations/:sessionId
 
-Returns all messages for the session in chronological order.
+GET /api/conversations/:sessionId
+
+Returns all messages in chronological order.
 
 Response:
 
 {
   "sessionId": "abc123",
   "messages": [
-    { "id": 1, "role": "user", "content": "...", "createdAt": "..." },
-    { "id": 2, "role": "assistant", "content": "...", "createdAt": "..." }
+    {
+      "id": 1,
+      "role": "user",
+      "content": "Hi",
+      "createdAt": "2026-02-24 17:20:00"
+    }
   ]
 }
-3) GET /api/sessions
 
-Returns list of sessions with last updated timestamp.
+GET /api/sessions
 
-Response:
+Returns list of sessions.
 
 {
   "sessions": [
@@ -126,63 +166,99 @@ Response:
 
 
 
-## Database Schema (SQLite)
+Database Schema (SQLite)
 sessions
-column	type
+Column	Type
 id	TEXT (PK)
 created_at	DATETIME
 updated_at	DATETIME
+
 messages
-column	type
-id	INTEGER (PK autoinc)
+Column	Type
+id	INTEGER (PK, autoincrement)
 session_id	TEXT (FK to sessions.id)
 role	TEXT ("user"/"assistant")
 content	TEXT
 created_at	DATETIME
-Document-Only Answering (Strict)
 
-The assistant is required to answer only using docs.json.
 
-Implementation details:
 
-Backend selects relevant docs (top 3) using a simple keyword overlap score.
 
-Backend sends relevant docs + last 5 user/assistant pairs from SQLite as context.
 
-Prompt forces the model to output SOURCE: <Doc Title> on the last line.
+Document-Based Answering (Strict Enforcement)
 
-Backend validates the SOURCE must match one of the provided doc titles.
+The assistant:
 
-If validation fails → fallback response is returned.
+Loads documentation from docs.json
+
+Selects relevant documents (top 3)
+
+Includes last 5 user + assistant message pairs from SQLite
+
+Forces model to output:
+
+SOURCE: <Document Title>
+
+Backend validates the source title
+
+If validation fails → returns fallback
+
+This guarantees no hallucination outside documentation.
+
+
+
+
+
 
 Rate Limiting
 
-Basic IP-based rate limiting is enabled:
+30 requests per minute per IP
 
-30 requests per minute per IP (configurable)
-
-
+Returns clean JSON error if exceeded
 
 
-## Assumptions
-
-Sessions are created on first /api/chat call.
-
-The frontend stores the active sessionId in localStorage.
-
-The sidebar lists all previous sessions (extra UI improvement).
-
-Docs are maintained in docs.json and can be edited anytime.
 
 
-## Screenshots
 
-### Chat Working
-![Chat](screenshots/chat.png)
 
-### Fallback Behavior
-![Fallback](screenshots/fallback.png)
+Assumptions
 
-### Session Switching
-![Sessions](screenshots/old-sessions.png)
+Sessions are created on first /api/chat call
 
+Session ID is stored in browser localStorage
+
+Documentation is static JSON (docs.json)
+
+LLM must cite document title to be accepted
+
+
+
+
+
+
+Features Implemented
+
+Session-based conversation
+
+SQLite persistence
+
+Strict documentation-only answers
+
+Sidebar session switching (extra UI enhancement)
+
+Error handling
+
+Rate limiting
+
+Clean API responses
+
+Secure environment variable handling
+
+
+
+
+
+
+Author
+
+Murali Krishna Bandaru
