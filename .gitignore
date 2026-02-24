@@ -1,0 +1,21 @@
+# node / react
+node_modules
+dist
+build
+.vite
+
+# env files
+.env
+backend/.env
+frontend/.env
+
+# sqlite db
+backend/data/*.sqlite
+backend/data/*.sqlite-wal
+backend/data/*.sqlite-shm
+
+# logs
+*.log
+
+# OS
+.DS_Store

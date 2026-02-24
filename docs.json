@@ -1,0 +1,31 @@
+[
+  {
+    "title": "Reset Password",
+    "content": "Users can reset their password by going to Settings > Security > Reset Password."
+  },
+  {
+    "title": "Refund Policy",
+    "content": "Refunds are allowed within 7 days of purchase. After 7 days, refunds are not available."
+  },
+  {
+    "title": "Change Email",
+    "content": "Users can change their email address from Settings > Profile > Email."
+  },
+  {
+    "title": "Delete Account",
+    "content": "Users can delete their account from Settings > Account > Delete Account. This action is permanent and cannot be reversed."
+  },
+  {
+    "title": "Subscription Plans",
+    "content": "The product offers Basic, Pro, and Enterprise plans. Users can upgrade or downgrade from the Billing section."
+  },
+  {
+    "title": "Cancel Subscription",
+    "content": "Users can cancel their subscription from Settings > Billing > Cancel Plan. Access will remain active until the end of the billing cycle."
+  },
+  {
+    "title": "Contact Support",
+    "content": "Users can contact support by emailing support@example.com. Response time is usually within 24 hours."
+  }
+]
+

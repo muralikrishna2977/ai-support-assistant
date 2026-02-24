@@ -1,0 +1,1 @@
+export const DOCS_FALLBACK = "Sorry, I don’t have information about that.";
